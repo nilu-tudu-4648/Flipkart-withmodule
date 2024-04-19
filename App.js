@@ -6,9 +6,10 @@ import {
   getDeviceCores,
   getKernelInformation,
   getProximityData,
+  getMacAddress,
   getViewPort,
-  makeApiCall,
   onSensorChanged,
+  getWifiSSID,
 } from 'react-native-awesome-module';
 
 const App = () => {
@@ -47,10 +48,8 @@ const App = () => {
   };
   const getBoottimeValue = async () => {
     try {
-      const data = await makeApiCall()
-console.log(data)
-      // const getBoottimev = await getBoottime();
-      // console.log('getBoottime:', getBoottimev);
+      const data = await getWifiSSID()
+console.log(data,'getWifiSSID')
     } catch (error) {
       console.log('Error retrieving viewport size:', error);
     }

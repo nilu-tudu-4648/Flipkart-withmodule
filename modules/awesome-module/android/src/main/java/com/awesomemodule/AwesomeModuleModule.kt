@@ -20,6 +20,7 @@ import android.hardware.SensorManager
 import kotlin.math.abs
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.facebook.react.bridge.*
+import android.net.wifi.WifiManager
 
 class AwesomeModuleModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext), SensorEventListener {
@@ -87,15 +88,7 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             .emit(eventName, data)
     }
 
-    @ReactMethod
-    fun getBootTime(promise: Promise) {
-        try {
-            val bootTimeMillis = SystemClock.elapsedRealtime()
-            promise.resolve(bootTimeMillis)
-        } catch (e: Exception) {
-            promise.reject(e)
-        }
-    }
+  
 
     @ReactMethod
     fun getKernelInformation(promise: Promise) {
@@ -118,40 +111,7 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             promise.reject(e)
         }
     }
-
-    @ReactMethod
-    fun getDeviceCores(promise: Promise) {
-        try {
-            val cores = if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
-                Runtime.getRuntime().availableProcessors()
-            } else {
-                1 // Fallback to 1 if the API level is lower than Jelly Bean MR1
-            }
-            promise.resolve(cores)
-        } catch (e: Exception) {
-            promise.reject(e)
-        }
-    }
-
-    @ReactMethod
-    fun getGPUDetails(promise: Promise) {
-        val gpuDetails = HashMap<String, String>()
-        try {
-            val extensions = GLES10.glGetString(GLES10.GL_EXTENSIONS)
-            val renderer = GLES10.glGetString(GLES10.GL_RENDERER)
-            val version = GLES10.glGetString(GLES10.GL_VERSION)
-
-            gpuDetails["extensions"] = extensions ?: ""
-            gpuDetails["renderer"] = renderer ?: ""
-            gpuDetails["version"] = version ?: ""
-
-            promise.resolve(gpuDetails)
-        } catch (e: Exception) {
-            promise.reject(e)
-        }
-    }
-
-    @ReactMethod
+ @ReactMethod
     fun getViewPort(promise: Promise) {
         try {
             val displayMetrics = getCurrentActivity()?.resources?.displayMetrics
@@ -167,6 +127,34 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             promise.reject(e)
         }
     }
+    @ReactMethod
+    fun getDeviceCores(promise: Promise) {
+        try {
+            val cores = if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
+                Runtime.getRuntime().availableProcessors()
+            } else {
+                1 // Fallback to 1 if the API level is lower than Jelly Bean MR1
+            }
+            promise.resolve(cores)
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
+    }
+@ReactMethod
+fun getWifiSSID(promise: Promise) {
+    try {
+        val wifiManager = reactApplicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiInfo = wifiManager.connectionInfo
+        val ssid = wifiInfo.ssid // This returns the SSID surrounded by double quotation marks.
+        
+        // If the SSID is surrounded by double quotation marks, remove them.
+        val formattedSSID = ssid.removeSurrounding("\"")
+
+        promise.resolve(formattedSSID)
+    } catch (e: Exception) {
+        promise.reject(e)
+    }
+}
 
     companion object {
         const val NAME = "AwesomeModule"
