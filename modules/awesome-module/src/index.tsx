@@ -28,7 +28,6 @@ export function getColorDepth(): Promise<string> {
     }
   });
 }
-
 export function getViewPort(): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
     try {
@@ -49,7 +48,6 @@ export function getViewPort(): Promise<{ width: number; height: number }> {
     }
   });
 }
-
 export function getDeviceCores(): Promise<number> {
   return new Promise((resolve, reject) => {
     try {
@@ -69,7 +67,6 @@ export function getDeviceCores(): Promise<number> {
     }
   });
 }
-
 export function getKernelInformation(): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
@@ -89,7 +86,6 @@ export function getKernelInformation(): Promise<string> {
     }
   });
 }
-
 export function getWifiSSID(): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
@@ -109,14 +105,12 @@ export function getWifiSSID(): Promise<string> {
     }
   });
 }
-
 export function onSensorChanged(callback: (data: any) => void) {
   if (Platform.OS === 'android') {
     DeviceEventEmitter.addListener('ProximityData', callback);
     DeviceEventEmitter.addListener('OrientationData', callback);
   }
 }
-
 export function getProximityData(): Promise<{ isNear: boolean }> {
   return new Promise((resolve, reject) => {
     if (Platform.OS === 'android') {
@@ -132,7 +126,6 @@ export function getProximityData(): Promise<{ isNear: boolean }> {
     }
   });
 }
-
 export function getOrientationData(): Promise<{ azimuth: number; pitch: number; roll: number }> {
   return new Promise((resolve, reject) => {
     if (Platform.OS === 'android') {
@@ -145,6 +138,25 @@ export function getOrientationData(): Promise<{ azimuth: number; pitch: number; 
         });
     } else {
       reject(new Error('getOrientationData is not available on this platform'));
+    }
+  });
+}
+export function getGPUDetails(): Promise<{ vendor: string; version: string; renderer: string }> {
+  return new Promise((resolve, reject) => {
+    try {
+      if (Platform.OS === 'android') {
+        NativeModules.GPUModule.getGPUDetails((error: Error | null, gpuDetails: { vendor: string; version: string; renderer: string }) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(gpuDetails);
+          }
+        });
+      } else {
+        reject(new Error('getGPUDetails is not available on this platform'));
+      }
+    } catch (error) {
+      reject(error);
     }
   });
 }

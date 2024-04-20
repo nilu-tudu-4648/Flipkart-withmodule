@@ -10,6 +10,7 @@ import {
   getViewPort,
   onSensorChanged,
   getWifiSSID,
+  getGPUDetails,
 } from 'react-native-awesome-module';
 
 const App = () => {
@@ -46,13 +47,21 @@ const App = () => {
       console.log('Error retrieving viewport size:', error);
     }
   };
-
+  const getGpuDetails = async ()=>{
+    try {
+      const data = await getGPUDetails()
+      console.log(data,'getGpuDetails')
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     getColorDepthValue();
     getViewPortValue();
     getDeviceCorestValue();
     getKernelInformationValue();
+    getGpuDetails()
   }, []);
   useEffect(() => {
     // Retrieve proximity data

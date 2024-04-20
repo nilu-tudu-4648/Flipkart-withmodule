@@ -1,6 +1,6 @@
 package com.awesomemodule
-
 import android.os.Build
+import android.opengl.EGL14
 import android.util.DisplayMetrics
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -22,10 +22,16 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.facebook.react.bridge.*
 import android.net.wifi.WifiManager
 
+
+import android.opengl.EGLDisplay
+
+import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.WritableNativeMap
+
 class AwesomeModuleModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext), SensorEventListener {
 
-   private var sensorManager: SensorManager? = null
+    private var sensorManager: SensorManager? = null
     private var proximitySensor: Sensor? = null
     private var isSensorRegistered: Boolean = false
     private var isNear: Boolean = false
@@ -33,12 +39,16 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
     override fun getName(): String {
         return NAME
     }
-    
-       init {
+
+    init {
         sensorManager = reactContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         proximitySensor = sensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         registerProximitySensor()
     }
+
+ 
+
+
 
     override fun onCatalystInstanceDestroy() {
         unregisterProximitySensor()
@@ -88,8 +98,6 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             .emit(eventName, data)
     }
 
-  
-
     @ReactMethod
     fun getKernelInformation(promise: Promise) {
         try {
@@ -111,7 +119,8 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             promise.reject(e)
         }
     }
- @ReactMethod
+
+    @ReactMethod
     fun getViewPort(promise: Promise) {
         try {
             val displayMetrics = getCurrentActivity()?.resources?.displayMetrics
@@ -127,6 +136,7 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             promise.reject(e)
         }
     }
+
     @ReactMethod
     fun getDeviceCores(promise: Promise) {
         try {
@@ -138,24 +148,6 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
             promise.resolve(cores)
         } catch (e: Exception) {
             promise.reject(e)
-        }
-    }
-@ReactMethod
-   public void getWifiSSID(Promise promise) {
-        try {
-            WifiManager wifiManager = (WifiManager) getReactApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager != null) {
-                String ssid = wifiManager.getConnectionInfo().getSSID();
-                if (ssid != null) {
-                    // If the SSID is surrounded by double quotation marks, remove them.
-                    String formattedSSID = ssid.replace("\"", "");
-                    promise.resolve(formattedSSID);
-                    return;
-                }
-            }
-            promise.resolve(""); // No SSID found
-        } catch (Exception e) {
-            promise.reject(e);
         }
     }
 

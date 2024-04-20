@@ -7,8 +7,6 @@
   "license": "UNLICENSED",
   "homepage": "#readme",
   "dependencies": {
-    "axios": "^1.6.8",
-    "react-native-device-info": "^10.13.1",
-    "react-native-localize": "^3.1.0"
+    "axios": "^1.6.8"
   }
 }
