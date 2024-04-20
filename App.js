@@ -46,21 +46,13 @@ const App = () => {
       console.log('Error retrieving viewport size:', error);
     }
   };
-  const getBoottimeValue = async () => {
-    try {
-      const data = await getWifiSSID()
-console.log(data,'getWifiSSID')
-    } catch (error) {
-      console.log('Error retrieving viewport size:', error);
-    }
-  };
+
 
   useEffect(() => {
     getColorDepthValue();
     getViewPortValue();
     getDeviceCorestValue();
     getKernelInformationValue();
-    getBoottimeValue();
   }, []);
   useEffect(() => {
     // Retrieve proximity data

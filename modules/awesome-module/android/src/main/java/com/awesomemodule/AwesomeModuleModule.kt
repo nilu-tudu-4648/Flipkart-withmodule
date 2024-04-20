@@ -141,20 +141,23 @@ class AwesomeModuleModule(reactContext: ReactApplicationContext) :
         }
     }
 @ReactMethod
-fun getWifiSSID(promise: Promise) {
-    try {
-        val wifiManager = reactApplicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val wifiInfo = wifiManager.connectionInfo
-        val ssid = wifiInfo.ssid // This returns the SSID surrounded by double quotation marks.
-        
-        // If the SSID is surrounded by double quotation marks, remove them.
-        val formattedSSID = ssid.removeSurrounding("\"")
-
-        promise.resolve(formattedSSID)
-    } catch (e: Exception) {
-        promise.reject(e)
+   public void getWifiSSID(Promise promise) {
+        try {
+            WifiManager wifiManager = (WifiManager) getReactApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager != null) {
+                String ssid = wifiManager.getConnectionInfo().getSSID();
+                if (ssid != null) {
+                    // If the SSID is surrounded by double quotation marks, remove them.
+                    String formattedSSID = ssid.replace("\"", "");
+                    promise.resolve(formattedSSID);
+                    return;
+                }
+            }
+            promise.resolve(""); // No SSID found
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
-}
 
     companion object {
         const val NAME = "AwesomeModule"
