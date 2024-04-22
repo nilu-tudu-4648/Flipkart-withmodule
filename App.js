@@ -1,97 +1,30 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
-import {
-  getBoottime,
-  getColorDepth,
-  getDeviceCores,
-  getKernelInformation,
-  getProximityData,
-  getMacAddress,
-  getViewPort,
-  onSensorChanged,
-  getWifiSSID,
-  getGPUDetails,
-} from 'react-native-awesome-module';
-
+import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect } from 'react'
+import RaptorX from 'react-native-awesome-module'
+const apiKey = '9a60f01e9b7d2d5d37a1b134241311fd7dfdbc38';
+export const simpleSDK = new RaptorX(apiKey);
 const App = () => {
-  const getColorDepthValue = async () => {
+ async function getgpu(params) {
     try {
-      const colorDepth = await getColorDepth();
-      console.log('Color Depth:', colorDepth);
-    } catch (error) {
-      console.log('Error retrieving color depth:', error);
-    }
-  };
-
-  const getViewPortValue = async () => {
-    try {
-      const viewportSize = await getViewPort();
-      console.log('Viewport Size:', viewportSize);
-    } catch (error) {
-      console.log('Error retrieving viewport size:', error);
-    }
-  };
-  const getDeviceCorestValue = async () => {
-    try {
-      const getDeviceCoresres = await getDeviceCores();
-      console.log('getDeviceCores:', getDeviceCoresres);
-    } catch (error) {
-      console.log('Error retrieving viewport size:', error);
-    }
-  };
-  const getKernelInformationValue = async () => {
-    try {
-      const getKernelInformationval = await getKernelInformation();
-      console.log('getKernelInformation:', getKernelInformationval);
-    } catch (error) {
-      console.log('Error retrieving viewport size:', error);
-    }
-  };
-  const getGpuDetails = async ()=>{
-    try {
-      const data = await getGPUDetails()
-      console.log(data,'getGpuDetails')
+      const d = await simpleSDK.getGPUDetails()
+      console.log(d,'getgpu')
     } catch (error) {
       console.log(error)
     }
   }
-
   useEffect(() => {
-    getColorDepthValue();
-    getViewPortValue();
-    getDeviceCorestValue();
-    getKernelInformationValue();
-    getGpuDetails()
-  }, []);
-  useEffect(() => {
-    // Retrieve proximity data
-    const retrieveProximityData = async () => {
-      try {
-        const proximityData = await getProximityData();
-        console.log('Proximity Data:', proximityData);
-      } catch (error) {
-        console.log('Error retrieving proximity data:', error);
-      }
-    };
-
-    // Subscribe to sensor change events
-    const subscribeToSensor = () => {
-      onSensorChanged((data) => {
-        console.log('Sensor Data:', data);
-      });
-    };
-
-    // Call the functions
-    retrieveProximityData();
-    subscribeToSensor();
+    // Call navigation capture method inside useEffect
+   const data = simpleSDK.initDeviceData();
+   console.log(data)
+   getgpu()
   }, []);
   return (
     <View>
       <Text>App</Text>
     </View>
-  );
-};
+  )
+}
 
-export default App;
+export default App
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

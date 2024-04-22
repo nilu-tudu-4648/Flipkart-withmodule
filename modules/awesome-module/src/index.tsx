@@ -1,5 +1,6 @@
 import { DeviceEventEmitter, NativeModules, Platform } from 'react-native';
 
+import DeviceInfo from "react-native-device-info";
 const LINKING_ERROR =
   `The package 'react-native-awesome-module' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
@@ -159,6 +160,20 @@ export function getGPUDetails(): Promise<{ vendor: string; version: string; rend
       reject(error);
     }
   });
+}
+export async function getDeviceData(): Promise<{ is_emulator: boolean; device_id: string; ip_address: string }> {
+  try {
+    const is_emulator = await DeviceInfo.isEmulator();
+    const device_id = DeviceInfo.getDeviceId();
+    const ip_address = await DeviceInfo.getIpAddress();
+    return {
+      is_emulator,
+      device_id,
+      ip_address
+    };
+  } catch (error) {
+    throw error;
+  }
 }
 
 
