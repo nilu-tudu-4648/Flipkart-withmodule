@@ -6,7 +6,7 @@ export const simpleSDK = new RaptorX(apiKey);
 const App = () => {
  async function getgpu(params) {
     try {
-      const d = await simpleSDK.getGPUDetails()
+      const d = await simpleSDK.initDeviceData()
       console.log(d,'getgpu')
     } catch (error) {
       console.log(error)

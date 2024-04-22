@@ -1,10 +1,4 @@
-// import {
-//   Keyboard,
-//   StyleSheet,
-//   TextInput,
-//   TouchableWithoutFeedback,
-//   View,
-// } from "react-native";
+
 // import { useRef, useState } from "react";
 // import KeystrokeDynamicsSDK from "./components/KeystrokeDynamicsSDK";
 
@@ -79,11 +73,8 @@ import getAllDeviceData from "../functions/deviceData";
 import getSensorsData from "../functions/sensorsData";
 import clearSessionData from "../functions/generate_session/clearSession";
 import { getElementInfo } from "../functions/formCapture";
-// import GPU_SDK from './functions/gpuDetails/GPUModule.kt'
 import NetInfo from "@react-native-community/netinfo";
-import { Platform,NativeModules } from "react-native";
 
-const AwesomeModule = NativeModules.AwesomeModule
 class RaptorX {
   constructor(api_key, navigation) {
     this.api_key = api_key;
