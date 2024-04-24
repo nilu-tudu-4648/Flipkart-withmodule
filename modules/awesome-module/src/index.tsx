@@ -29,6 +29,7 @@ export function getColorDepth(): Promise<string> {
     }
   });
 }
+
 export function getViewPort(): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
     try {
@@ -161,6 +162,7 @@ export function getGPUDetails(): Promise<{ vendor: string; version: string; rend
     }
   });
 }
+
 export async function getDeviceData(): Promise<{ is_emulator: boolean; device_id: string; ip_address: string }> {
   try {
     const is_emulator = await DeviceInfo.isEmulator();

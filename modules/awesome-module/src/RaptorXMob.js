@@ -1,4 +1,3 @@
-
 // import { useRef, useState } from "react";
 // import KeystrokeDynamicsSDK from "./components/KeystrokeDynamicsSDK";
 
@@ -62,28 +61,29 @@
 //   Geolocation.getCurrentPosition((info) => console.log(info));
 // };
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import API from "../api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../api';
 import {
   generateSessionId,
   createSessionData,
-} from "../functions/generate_session/generateSession";
-import { getNavigationData } from "../functions/navigation_Listner";
-import getAllDeviceData from "../functions/deviceData";
-import getSensorsData from "../functions/sensorsData";
-import clearSessionData from "../functions/generate_session/clearSession";
-import { getElementInfo } from "../functions/formCapture";
-import NetInfo from "@react-native-community/netinfo";
+} from '../functions/generate_session/generateSession';
+import {getNavigationData} from '../functions/navigation_Listner';
+import getAllDeviceData from '../functions/deviceData';
+import getSensorsData from '../functions/sensorsData';
+import clearSessionData from '../functions/generate_session/clearSession';
+import {getElementInfo} from '../functions/formCapture';
+import NetInfo from '@react-native-community/netinfo';
+import { NativeModules, Platform } from 'react-native';
 
 class RaptorX {
   constructor(api_key, navigation) {
     this.api_key = api_key;
-    this.apiBaseUrl = "https://server.panoplia.io";
+    this.apiBaseUrl = 'https://server.panoplia.io';
     this.api = new API({
       hostUrl: this.apiBaseUrl,
       api_key: this.api_key,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     this.navigation = navigation; // Set the navigation object during initialization
@@ -98,7 +98,7 @@ class RaptorX {
         await createSessionData(this.api, sessionId, customerId);
       }
     } catch (error) {
-      console.error("Error creating session:", error);
+      console.error('Error creating session:', error);
       throw error;
     }
   }
@@ -108,47 +108,47 @@ class RaptorX {
   async clearSession() {
     try {
       // Retrieve the session ID from AsyncStorage or any other storage mechanism
-      const sessionId = await AsyncStorage.getItem("sessionId");
-      const customerId = await AsyncStorage.getItem("customerId");
+      const sessionId = await AsyncStorage.getItem('sessionId');
+      const customerId = await AsyncStorage.getItem('customerId');
       if (!sessionId) {
-        console.log("No session ID found. Skipping session clearing.");
+        console.log('No session ID found. Skipping session clearing.');
         return;
       }
       await clearSessionData(this.api, sessionId, customerId);
-      console.log("Session cleared successfully.");
+      console.log('Session cleared successfully.');
     } catch (error) {
-      console.error("Error clearing session:", error);
+      console.error('Error clearing session:', error);
       throw error;
     }
   }
   async storeCustomerID(customerId) {
     try {
-      await AsyncStorage.setItem("customerId", customerId);
+      await AsyncStorage.setItem('customerId', customerId);
     } catch (error) {
-      console.error("Error storing customerId:", error);
+      console.error('Error storing customerId:', error);
       throw error;
     }
   }
   async initDeviceData() {
     try {
-      const sessionId = await AsyncStorage.getItem("sessionId");
-      const customerId = await AsyncStorage.getItem("customerId");
+      const sessionId = await AsyncStorage.getItem('sessionId');
+      const customerId = await AsyncStorage.getItem('customerId');
       const deviceData = await getAllDeviceData(
         this.api,
         sessionId,
-        customerId
+        customerId,
       );
       return deviceData;
     } catch (error) {
-      console.error("Error initializing device data:", error);
+      console.error('Error initializing device data:', error);
     }
   }
   async initSensorsData() {
     try {
-      const customerId = await AsyncStorage.getItem("customerId");
+      const customerId = await AsyncStorage.getItem('customerId');
       await getSensorsData(this.api, customerId);
     } catch (error) {
-      console.error("Error initializing sensor data:", error);
+      console.error('Error initializing sensor data:', error);
       throw error;
     }
   }
@@ -157,21 +157,19 @@ class RaptorX {
       const state = await NetInfo.fetch();
       return state;
     } catch (error) {
-      console.error("Error getting network details:", error);
+      console.error('Error getting network details:', error);
       throw error;
     }
   }
   async formCapture(e, i) {
     try {
-      const customerId = await AsyncStorage.getItem("customerId");
+      const customerId = await AsyncStorage.getItem('customerId');
       const res = getElementInfo(this.api, e, i, customerId);
       return res;
     } catch (error) {
       console.log(error);
     }
   }
-
-
 }
 
 export default RaptorX;

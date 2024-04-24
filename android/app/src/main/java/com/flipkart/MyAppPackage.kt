@@ -1,17 +1,16 @@
-package com.awesomemodule
+package com.flipkart
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
-import com.awesomemodule.SystemUptimeModule // Import your SystemUptimeModule class here
+import com.flipkart.MacAddressModule
 
 class MyAppPackage : ReactPackage {
 
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
         val modules = mutableListOf<NativeModule>()
-        modules.add(GPUModule(reactContext))
-        modules.add(SystemUptimeModule(reactContext))
+        modules.add(MacAddressModule(reactContext))
         return modules
     }
 

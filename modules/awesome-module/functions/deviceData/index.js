@@ -21,12 +21,7 @@ export const makeDeviceDataApiCall = async (
   deviceData,
 ) => {
   try {
-    console.log({
-      session_id: sessionId,
-      customer_id: customerId,
-      ...deviceData,
-    });
-
+    console.log(deviceData)
     const response = await api.post('api/analytics/device/capture', {
       session_id: sessionId,
       customer_id: customerId,
@@ -53,6 +48,60 @@ export function getProximityDataFunc() {
       reject(new Error('getProximityData is not available on this platform'));
     }
   });
+}
+export const getSystemUptime = () => {
+  const { SystemUptimeModule } = NativeModules;
+  return new Promise((resolve, reject) => {
+    try {
+      SystemUptimeModule.getSystemUptime((uptime) => {
+        resolve(uptime);
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+export function getSystemUptimeFunc() {
+  console.log('Starting getSystemUptime');
+  return new Promise((resolve, reject) => {
+    try {
+      if (Platform.OS === 'android') {
+        console.log('Platform is Android');
+        const { SystemUptimeModule } = NativeModules;
+        if (SystemUptimeModule && SystemUptimeModule.getSystemUptime) {
+          SystemUptimeModule.getSystemUptime((uptime) => {
+            try {
+              console.log('Received uptime:', uptime);
+              const fixedUptime = fixErrorFunction(uptime);
+              console.log('Fixed uptime:', fixedUptime);
+              resolve(fixedUptime);
+            } catch (error) {
+              console.error('Error fixing uptime:', error);
+              reject(error);
+            }
+          });
+        } else {
+          console.error('SystemUptimeModule or getSystemUptime is not available');
+          reject(new Error('SystemUptimeModule or getSystemUptime is not available'));
+        }
+      } else {
+        console.error('getSystemUptime is not available on this platform');
+        reject(new Error('getSystemUptime is not available on this platform'));
+      }
+    } catch (error) {
+      console.error('Error in getSystemUptime:', error);
+      reject(error);
+    }
+  });
+}
+
+function fixErrorFunction(data) {
+  if (typeof data === 'object' && data instanceof java.lang.Long) {
+    // Extract the primitive long value
+    return data.longValue();
+  }
+  // No need for correction, return original data
+  return data;
 }
 export function getColorDepth() {
   return new Promise((resolve, reject) => {
@@ -145,6 +194,7 @@ export function getKernelInformation() {
 }
 const getAllDeviceData = async (api, sessionId, customerId) => {
   try {
+    const system_uptime = await getSystemUptime()
     const gpu_detail = await getGPUDetails();
     const gpu_detail_renderer = gpu_detail.renderer;
     const gpu_detail_vendor = gpu_detail.vendor;
@@ -204,7 +254,9 @@ const getAllDeviceData = async (api, sessionId, customerId) => {
       viewport_size_height,
       viewport_size_width,
       deviceCores:deviceCores.toString(),
-      kernel_information
+      kernel_information,
+      system_uptime
+      // mac_address
     };
 
     const deviceDataResult = await makeDeviceDataApiCall(
